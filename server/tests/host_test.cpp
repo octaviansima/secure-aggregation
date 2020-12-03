@@ -3,6 +3,7 @@
 #include <numeric>
 #include <map>
 #include <string>
+#include <time.h>
 
 #include "../host/host.cpp"
 
@@ -16,7 +17,7 @@ using namespace std;
 int main(int argc, char* argv[]) 
 {  
     const size_t accumulator_length = 3;
-    size_t num_weights = 10000;
+    size_t num_weights = 1000;
     size_t weights_length = 100;
 
     uint8_t*** encrypted_accumulator = new uint8_t**[accumulator_length * sizeof(uint8_t**)];
@@ -76,6 +77,7 @@ int main(int argc, char* argv[])
     }
 
     size_t* new_params_length = new size_t;
+    const clock_t begin_time = clock();
     int error = host_modelaggregator(encrypted_accumulator, 
             accumulator_lengths, 
             accumulator_length, 
@@ -83,7 +85,9 @@ int main(int argc, char* argv[])
             serialized_old_params_buffer_size,
             encrypted_new_params_ptr,
             new_params_length);
+    cout << "Time for host_modelaggregator to run: " << double( clock () - begin_time ) /  CLOCKS_PER_SEC << "s" << endl;
 
+    /*
     // Free memory
     for (int i = 0; i < accumulator_length; i++) {
         delete encrypted_accumulator[i][0];
@@ -99,6 +103,7 @@ int main(int argc, char* argv[])
     if (error > 0) {
         return error;
     }
+    */
 
     uint8_t** encrypted_new_params = *encrypted_new_params_ptr;
     uint8_t* serialized_new_params = new uint8_t[*new_params_length * sizeof(uint8_t)];
@@ -108,6 +113,7 @@ int main(int argc, char* argv[])
             *new_params_length,
             &serialized_new_params);
 
+    /*
     // Free memory
     for (int i = 0; i < accumulator_length; i++) {
         delete encrypted_new_params_ptr[i][0];
@@ -115,10 +121,9 @@ int main(int argc, char* argv[])
         delete encrypted_new_params_ptr[i][2];
         delete encrypted_new_params_ptr[i];
     }
+    */
 
     map<string, vector<double>> new_params = deserialize(serialized_new_params);
-
-    print_map(new_params);
 
     for (const auto& pair : new_params) {
         if (pair.second.size() != weights_length) {
@@ -131,5 +136,6 @@ int main(int argc, char* argv[])
         }
     }
 
-    return 0;
+    cout << "Before failing on purpose" << endl;
+    return 1;
 }
