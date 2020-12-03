@@ -15,9 +15,9 @@ using namespace std;
 
 int main(int argc, char* argv[]) 
 {  
-    size_t accumulator_length = 3;
-    size_t num_weights = 30;
-    size_t weights_length = 10;
+    const size_t accumulator_length = 3;
+    size_t num_weights = 10000;
+    size_t weights_length = 100;
 
     uint8_t*** encrypted_accumulator = new uint8_t**[accumulator_length * sizeof(uint8_t**)];
     size_t* accumulator_lengths = new size_t[accumulator_length * sizeof(size_t)];
