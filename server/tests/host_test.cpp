@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
             serialized_old_params_buffer_size,
             encrypted_new_params_ptr,
             new_params_length);
-    cout << "Time for host_modelaggregator to run: " << double( clock () - begin_time ) /  CLOCKS_PER_SEC << "s" << endl;
+    cout << "Time for host_modelaggregator to run: " << double(clock() - begin_time) /  CLOCKS_PER_SEC << "s" << endl;
 
     /*
     // Free memory
