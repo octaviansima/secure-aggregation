@@ -16,14 +16,22 @@ using namespace std;
 int main(int argc, char* argv[]) 
 {  
     size_t accumulator_length = 3;
+    size_t num_weights = 30;
+    size_t weights_length = 10;
+
     uint8_t*** encrypted_accumulator = new uint8_t**[accumulator_length * sizeof(uint8_t**)];
     size_t* accumulator_lengths = new size_t[accumulator_length * sizeof(size_t)];
 
     for (int i = 0; i < accumulator_length; i++) {
-        map<string, vector<double>> accumulator = {{"w1", {i, i + 1, i + 2, i + 3}}, 
-                                                    {"w2", {i + 1, i + 2, i + 3, i + 4}},
-                                                    {"w3", {i + 2, i + 3, i + 4, i + 5}},
-                                                    {"_contribution", {1}}};
+        map<string, vector<double>> accumulator = {{"_contribution", {1}}};
+        for (int j = 0; j < num_weights; j++) {
+            vector<double> weights;
+            for (int k = 0; k < weights_length; k++) {
+                weights.push_back(i + j + k);
+            }
+            accumulator.insert(make_pair("w" + to_string(j), weights));
+        }
+
         int serialized_buffer_size = 0;
         uint8_t* serialized_params = serialize(accumulator, &serialized_buffer_size);
 
@@ -36,9 +44,15 @@ int main(int argc, char* argv[])
         accumulator_lengths[i] = serialized_buffer_size;
     }
 
-    map<string, vector<double>> old_params = {{"w1", {-3, -6, -9, -12}}, 
-                                                {"w2", {-6, -9, -12, -15}},
-                                                {"w3", {-9, -12, -15, -18}}};
+    map<string, vector<double>> old_params;
+    for (int j = 0; j < num_weights; j++) {
+        vector<double> weights;
+        for (int k = 0; k < weights_length; k++) {
+            weights.push_back(-(1 + j + k) * (int) accumulator_length);
+        }
+        old_params.insert(make_pair("w" + to_string(j), weights));
+    }
+
     int serialized_old_params_buffer_size = 0;
     uint8_t* serialized_old_params = serialize(old_params, &serialized_old_params_buffer_size);
 
@@ -104,8 +118,10 @@ int main(int argc, char* argv[])
 
     map<string, vector<double>> new_params = deserialize(serialized_new_params);
 
+    print_map(new_params);
+
     for (const auto& pair : new_params) {
-        if (pair.second.size() != 4) {
+        if (pair.second.size() != weights_length) {
             return 1;
         }
         for (float x : pair.second) {
