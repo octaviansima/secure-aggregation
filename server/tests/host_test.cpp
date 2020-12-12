@@ -17,8 +17,8 @@ using namespace std;
 int main(int argc, char* argv[]) 
 {  
     const size_t accumulator_length = 3;
-    size_t num_weights = 100;
-    size_t weights_length = 50;
+    size_t num_weights = 6000;
+    size_t weights_length = 100;
 
     uint8_t*** encrypted_accumulator = new uint8_t**[accumulator_length * sizeof(uint8_t**)];
     size_t* accumulator_lengths = new size_t[accumulator_length * sizeof(size_t)];
@@ -124,8 +124,6 @@ int main(int argc, char* argv[])
     */
 
     map<string, vector<double>> new_params = deserialize(serialized_new_params);
-
-    print_map(new_params);
 
     for (const auto& pair : new_params) {
         if (pair.second.size() != weights_length) {
