@@ -3,7 +3,6 @@
 #include <numeric>
 #include <map>
 #include <string>
-#include <time.h>
 
 #include "../host/host.cpp"
 
@@ -77,7 +76,6 @@ int main(int argc, char* argv[])
     }
 
     size_t* new_params_length = new size_t;
-    const clock_t begin_time = clock();
     int error = host_modelaggregator(encrypted_accumulator, 
             accumulator_lengths, 
             accumulator_length, 
@@ -85,7 +83,6 @@ int main(int argc, char* argv[])
             serialized_old_params_buffer_size,
             encrypted_new_params_ptr,
             new_params_length);
-    cout << "Time for host_modelaggregator to run: " << double(clock() - begin_time) /  CLOCKS_PER_SEC << "s" << endl;
 
     /*
     // Free memory
