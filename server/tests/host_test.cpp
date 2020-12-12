@@ -125,6 +125,8 @@ int main(int argc, char* argv[])
 
     map<string, vector<double>> new_params = deserialize(serialized_new_params);
 
+    print_map(new_params);
+
     for (const auto& pair : new_params) {
         if (pair.second.size() != weights_length) {
             return 1;
